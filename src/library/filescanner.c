@@ -1132,9 +1132,20 @@ process_inotify_dir(struct watch_info *wi, char *path, struct inotify_event *ie)
 
   if (ie->mask & IN_UNMOUNT)
     {
-      db_file_disable_bymatch(path, STRIP_NONE, 0);
-      db_pl_disable_bymatch(path, STRIP_NONE, 0);
-      db_directory_disable_bymatch(path, STRIP_NONE, 0);
+      // https://github.com/owntone/owntone-server/issues/1897
+      // umount event could be triggered by the idle time of an auto mounted fs
+      char resolved_path[PATH_MAX];
+      int is_link;
+      struct stat sb;
+      // try to read attributes of the path, if it fails we assume the fs was not auto mounted
+      ret = read_attributes(resolved_path, path, sb, &is_link);
+      DPRINTF(E_DBG, L_SCAN, "inotify IN_UNMOUNT on path %s, read_attributes returns: %i\n", path, ret);
+      if (ret < 0)
+	{
+	  db_file_disable_bymatch(path, STRIP_NONE, 0);
+	  db_pl_disable_bymatch(path, STRIP_NONE, 0);
+	  db_directory_disable_bymatch(path, STRIP_NONE, 0);
+	}
     }
 
   if (ie->mask & IN_MOVE_SELF)
