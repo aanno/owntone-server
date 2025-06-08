@@ -1130,11 +1130,16 @@ process_inotify_dir(struct watch_info *wi, char *path, struct inotify_event *ie)
 
   DPRINTF(E_DBG, L_SCAN, "Directory event: 0x%08x, cookie 0x%08x, wd %d\n", ie->mask, ie->cookie, wi->wd);
 
+  // IN_UNMOUNT case: https://github.com/owntone/owntone-server/issues/1897
+  // We don't know what to do with this, so just clear the watch
   if (ie->mask & IN_UNMOUNT)
-    {
-      db_file_disable_bymatch(path, STRIP_NONE, 0);
-      db_pl_disable_bymatch(path, STRIP_NONE, 0);
-      db_directory_disable_bymatch(path, STRIP_NONE, 0);
+    {	
+      DPRINTF(E_LOG, L_SCAN, "Directory unmounted: %s\n", path);
+      ret = watches_clear(wi->wd, path);
+      if (ret < 0)
+	{
+	  // Don't do anything
+	}
     }
 
   if (ie->mask & IN_MOVE_SELF)
