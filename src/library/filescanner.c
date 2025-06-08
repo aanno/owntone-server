@@ -1138,7 +1138,7 @@ process_inotify_dir(struct watch_info *wi, char *path, struct inotify_event *ie)
       int is_link;
       struct stat sb;
       // try to read attributes of the path, if it fails we assume the fs was not auto mounted
-      ret = read_attributes(resolved_path, path, sb, &is_link);
+      ret = read_attributes(resolved_path, path, &sb, &is_link);
       DPRINTF(E_DBG, L_SCAN, "inotify IN_UNMOUNT on path %s, read_attributes returns: %i\n", path, ret);
       if (ret < 0)
 	{
