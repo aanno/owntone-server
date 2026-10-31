@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.tabSize": 8,
+    "editor.indentSize": 2,
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.formatting": "clangFormat",
+    "[c]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools",
+      "editor.insertSpaces": false,
+      "editor.detectIndentation": false,
+    },
+    "[cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+    }
+  }
+}
